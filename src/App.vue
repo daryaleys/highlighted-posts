@@ -2,16 +2,13 @@
 import { onMounted, ref } from 'vue';
 import SinglePost from './components/SinglePost.vue';
 
-const posts = ref([]), postsLoading = ref(false), errorLoading = ref("");
+const posts = ref([]), errorLoading = ref("");
 
 const fetchPosts = () => {
-  postsLoading.value = true;
-
   fetch('./data/feed.json')
     .then((response) => response.json())
     .then((data) => posts.value = data)
     .catch(() => errorLoading.value = "Не удалось загрузить посты :(")
-    .finally(() => postsLoading.value = false);
 }
 
 onMounted(() => {
