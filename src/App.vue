@@ -1,27 +1,36 @@
-<template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
-</template>
+<script lang="ts" setup>
+import { onMounted, ref } from 'vue';
+import SinglePost from './components/SinglePost.vue';
 
-<script lang="ts">
-import { Options, Vue } from 'vue-class-component';
-import HelloWorld from './components/HelloWorld.vue';
+const posts = ref([]), postsLoading = ref(false), errorLoading = ref("");
 
-@Options({
-  components: {
-    HelloWorld,
-  },
+const fetchPosts = () => {
+  postsLoading.value = true;
+
+  fetch('/data/feed.json')
+    .then((response) => response.json())
+    .then((data) => posts.value = data)
+    .catch(() => errorLoading.value = "Не удалось загрузить посты :(")
+    .finally(() => postsLoading.value = false);
+}
+
+onMounted(() => {
+  fetchPosts();
 })
-export default class App extends Vue {}
 </script>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<template>
+  <span v-if="errorLoading">{{ errorLoading }}</span>
+  <ul class="post-list">
+    <SinglePost v-for="post in posts" v-bind="post" />
+  </ul>
+</template>
+
+<style>
+.post-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
 }
 </style>
