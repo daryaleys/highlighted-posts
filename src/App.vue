@@ -7,7 +7,7 @@ const posts = ref([]), postsLoading = ref(false), errorLoading = ref("");
 const fetchPosts = () => {
   postsLoading.value = true;
 
-  fetch('/data/feed.json')
+  fetch('./data/feed.json')
     .then((response) => response.json())
     .then((data) => posts.value = data)
     .catch(() => errorLoading.value = "Не удалось загрузить посты :(")
